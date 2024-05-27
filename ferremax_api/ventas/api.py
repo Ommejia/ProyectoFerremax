@@ -16,17 +16,23 @@ class CartItemListCreateAPI(ListAPIView, CreateAPIView):
     def create(self, request, *args, **kwargs):
         data = request.data.get('products', [])
         response_data = []
-        selected_product_ids = []  # Lista para almacenar IDs de productos seleccionados
         total = 0
         try:
             for item in data:
-                product = Product.objects.get(id=item['id'])
+                product_id = item.get('id')
+                product = Product.objects.get(id=product_id)
                 cart_item = CartItem.objects.create(product=product, quantity=item['quantity'])
-                response_data.append(CartItemSerializer(cart_item).data)
+                response_data.append({
+                    'product': {
+                        'id': product.id,
+                        'marca': product.marca,
+                        'name': product.name,
+                        'price': product.price,
+                        'quantity': cart_item.quantity,
+                    }
+                })
                 total += product.price * item['quantity']
-                # Agregar ID del producto seleccionado a la lista
-                selected_product_ids.append(product.id)
-            return Response({'message': 'Productos añadidos al carro de compras', 'cart_items': response_data, 'total': total, 'selected_product_ids': selected_product_ids}, status=status.HTTP_201_CREATED)
+            return Response({'message': 'Productos añadidos al carro de compras', 'cart_items': response_data, 'total': total}, status=status.HTTP_201_CREATED)
         except Product.DoesNotExist:
             return Response({'error': 'Producto no encontrado'}, status=status.HTTP_404_NOT_FOUND)
         except KeyError:
@@ -34,5 +40,26 @@ class CartItemListCreateAPI(ListAPIView, CreateAPIView):
 
 class CheckoutAPI(APIView):
     def post(self, request, *args, **kwargs):
+        # Obtener los detalles del producto de la base de datos
+        cart_items = CartItem.objects.all()
+        
+        # Serializar los detalles del producto
+        serialized_cart_items = []
+        for item in cart_items:
+            serialized_item = {
+                'id': item.product.id,
+                'marca': item.product.marca,
+                'name': item.product.name,
+                'price': item.product.price,
+                'quantity': item.quantity
+            }
+            serialized_cart_items.append(serialized_item)
+        
+        # Calcular el total de la compra
+        total = sum(item.product.price * item.quantity for item in cart_items)
+        
+        # Eliminar los productos del carrito después de procesar el pago
         CartItem.objects.all().delete()
-        return Response({'message': 'Pago realizado con éxito'}, status=status.HTTP_200_OK)
+
+        # Retornar el detalle de los productos comprados en el mensaje de "Checkout"
+        return Response({'message': 'Pago realizado con éxito', 'cart_items': serialized_cart_items, 'total': total}, status=status.HTTP_200_OK)
