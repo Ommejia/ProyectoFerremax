@@ -13,7 +13,7 @@ class Product(models.Model):
 
 class CartItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
+    quantity = models.IntegerField()
 
     def _str_(self):
         return f"{self.quantity}x {self.product.name}"
