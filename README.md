@@ -25,7 +25,7 @@ El proyecto sigue una estructura Django y está organizado de la siguiente maner
 
 ### 1. Obtener Todos los Productos Activos
 
-- **URL**: `/api/products/`
+- **URL**: `[/api/products/](http://localhost:8000/api/v1/products/)`
 - **Método HTTP**: `GET`
 - **Descripción**: Retorna una lista de todos los productos activos.
 - **Parámetros**:
