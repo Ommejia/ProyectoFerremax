@@ -25,7 +25,7 @@ El proyecto sigue una estructura Django y está organizado de la siguiente maner
 
 ### 1. Obtener Todos los Productos Activos
 
-- **URL**: `/api/products/`
+- **URL**: `http://localhost:8000/api/v1/products/`
 - **Método HTTP**: `GET`
 - **Descripción**: Retorna una lista de todos los productos activos.
 - **Parámetros**:
@@ -47,7 +47,7 @@ El proyecto sigue una estructura Django y está organizado de la siguiente maner
 
 ### 2. Ingresar Productos al Carro de Compras
 
-- **URL**: `/api/cart/`
+- **URL**: `http://localhost:8000/api/v1/cart/`
 - **Método HTTP**: `POST`
 - **Descripción**: Agrega uno o más productos al carrito de compras.
 - **Cuerpo de la Solicitud**:
@@ -68,7 +68,7 @@ El proyecto sigue una estructura Django y está organizado de la siguiente maner
 
 ### 3. Pagar el Carro de Compras y Finalizar el Pedido
 
-- **URL**: `/api/checkout/`
+- **URL**: `http://localhost:8000/api/v1/checkout/`
 - **Método HTTP**: `POST`
 - **Descripción**: Finaliza el pedido y limpia el carrito de compras.
 - **Respuesta**:
